@@ -20,12 +20,19 @@ async function run() {
         await client.connect();
         const database = client.db(process.env.DB_NAME);
         const tripsCollection = database.collection('trips');
+        const hotelsCollection = database.collection('hotels');
 
         // GET API
         app.get('/trips', async (req, res) => {
             const cursor = tripsCollection.find({});
             const trips = await cursor.toArray();
             res.send(trips);
+        });
+        // GET API
+        app.get('/hotels', async (req, res) => {
+            const cursor = hotelsCollection.find({});
+            const hotels = await cursor.toArray();
+            res.send(hotels);
         });
     }
     finally {

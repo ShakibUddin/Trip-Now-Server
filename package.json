@@ -7,8 +7,7 @@
     "url": ""
   },
   "scripts": {
-    "start": "node index.js",
-    "start-dve": "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
