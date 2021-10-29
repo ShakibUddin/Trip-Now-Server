@@ -21,6 +21,7 @@ async function run() {
         const database = client.db(process.env.DB_NAME);
         const tripsCollection = database.collection('trips');
         const hotelsCollection = database.collection('hotels');
+        const bookingsCollection = database.collection('bookings');
 
         // GET API
         app.get('/trips', async (req, res) => {
@@ -33,6 +34,17 @@ async function run() {
             const cursor = hotelsCollection.find({});
             const hotels = await cursor.toArray();
             res.send(hotels);
+        });
+        // POST API
+        app.post('/booking', async (req, res) => {
+            const data = req.body;
+            const insertOperation = await bookingsCollection.insertOne(data);
+            if (insertOperation.acknowledged) {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
         });
     }
     finally {
