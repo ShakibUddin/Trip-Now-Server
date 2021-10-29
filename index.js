@@ -65,6 +65,24 @@ async function run() {
                 res.send(false);
             }
         })
+        // PUT API
+        app.put('/update/booking/:id', async (req, res) => {
+            // create a filter for a booking to update
+            const filter = { '_id': ObjectId(req.params.id) };
+            // create a document that sets the approved value of booking
+            const updateDoc = {
+                $set: {
+                    approved: true
+                },
+            };
+            const updateOperation = await bookingsCollection.updateOne(filter, updateDoc);
+            if (updateOperation.acknowledged) {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        })
     }
     finally {
         // await client.close();
