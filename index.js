@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { MongoClient } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 require('dotenv').config();
 const app = express();
 
@@ -35,6 +36,12 @@ async function run() {
             const hotels = await cursor.toArray();
             res.send(hotels);
         });
+        // GET API
+        app.get('/allbookings', async (req, res) => {
+            const cursor = bookingsCollection.find({});
+            const allBookings = await cursor.toArray();
+            res.send(allBookings);
+        });
         // POST API
         app.post('/booking', async (req, res) => {
             const data = req.body;
@@ -46,6 +53,18 @@ async function run() {
                 res.send(false);
             }
         });
+        // DELETE API
+        app.delete('/delete/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const deleteOperation = await bookingsCollection.deleteOne(query);
+            if (deleteOperation.acknowledged) {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        })
     }
     finally {
         // await client.close();
