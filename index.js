@@ -23,6 +23,7 @@ async function run() {
         const tripsCollection = database.collection('trips');
         const hotelsCollection = database.collection('hotels');
         const bookingsCollection = database.collection('bookings');
+        const popularPlacesCollection = database.collection('popularplaces');
 
         // GET API - get all trips
         app.get('/trips', async (req, res) => {
@@ -36,11 +37,17 @@ async function run() {
             const hotels = await cursor.toArray();
             res.send(hotels);
         });
-        // GET API - ger all bookings
+        // GET API - get all bookings
         app.get('/allbookings', async (req, res) => {
             const cursor = bookingsCollection.find({});
             const allBookings = await cursor.toArray();
             res.send(allBookings);
+        });
+        // GET API - get all popular places
+        app.get('/popularplaces', async (req, res) => {
+            const cursor = popularPlacesCollection.find({});
+            const popularplaces = await cursor.toArray();
+            res.send(popularplaces);
         });
         // POST API - post a booking from user
         app.post('/booking', async (req, res) => {
