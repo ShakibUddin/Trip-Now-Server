@@ -24,6 +24,7 @@ async function run() {
         const hotelsCollection = database.collection('hotels');
         const bookingsCollection = database.collection('bookings');
         const popularPlacesCollection = database.collection('popularplaces');
+        const usersCollection = database.collection('users');
 
         // GET API - get all trips
         app.get('/trips', async (req, res) => {
@@ -48,6 +49,32 @@ async function run() {
             const cursor = popularPlacesCollection.find({});
             const popularplaces = await cursor.toArray();
             res.send(popularplaces);
+        });
+        // GET API - check if user is admin
+        app.get('/admin/:email', async (req, res) => {
+            const email = req.params.email;
+            const user = await usersCollection.findOne({ email: email });
+            console.log(user)
+            if (user.role === "ADMIN") {
+                res.send(true);
+            }
+            {
+                res.send(false);
+            }
+        });
+        // POST API - add a user in db
+        app.put('/user/add', async (req, res) => {
+            const user = req.body;
+            const query = { email: user.email };
+            const update = { $set: user };
+            const options = { upsert: true };
+            const upsertOperation = await usersCollection.updateOne(query, update, options);
+            if (upsertOperation.acknowledged) {
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
         });
         // POST API - post a booking from user
         app.post('/booking', async (req, res) => {
@@ -79,7 +106,7 @@ async function run() {
             // create a document that sets the approved value of booking
             const updateDoc = {
                 $set: {
-                    approved: true
+                    status: "Approved"
                 },
             };
             const updateOperation = await bookingsCollection.updateOne(filter, updateDoc);
